@@ -51,7 +51,7 @@ int main (int argc, char **argv) {
 	    break;
 	case '?':
 	    if (isprint (optopt))
-		fprintf (stderr, "Unknown option '%c'.\n", optopt);
+			fprintf (stderr, "Unknown option '%c'.\n", optopt);
 	    else
 		fprintf (stderr,
 			 "Unknown option character '%x'.\n",
@@ -63,36 +63,36 @@ int main (int argc, char **argv) {
 	}
     
     if (optind != argc -1) {
-	fprintf(stderr, "expecting exactly one non-flag argument -- the destination directory.\n");
-	for ( ; optind < argc ; optind++) {
-	    fprintf(stderr, "extra arguments: %s\n", argv[optind]);
-	} 
-	exit(1);
+		fprintf(stderr, "expecting exactly one non-flag argument -- the destination directory.\n");
+		for ( ; optind < argc ; optind++) {
+			fprintf(stderr, "extra arguments: %s\n", argv[optind]);
+		} 
+		exit(1);
     } else {
         strncpy(destdir, argv[optind], sizeof(destdir));
     }
       
     if (getcwd(cwd, sizeof(cwd)) == NULL) {
-	perror("getcwd() error");
-	exit(1);
+		perror("getcwd() error");
+		exit(1);
     }
     
     if (access(destdir, W_OK) != 0) {
-	fprintf(stderr, "Can't write to %s or it doesn't exist\n", destdir); 
+		fprintf(stderr, "Can't write to %s or it doesn't exist\n", destdir); 
         exit(1);
     }
     
     dir = opendir(destdir);
     if (!dir) {
-	fprintf(stderr, "Couldn't open %s as a directory\n", destdir);
-	exit(1);
+		fprintf(stderr, "Couldn't open %s as a directory\n", destdir);
+		exit(1);
     }
     closedir(dir);
 
     if (verbose) {
-	fprintf(stderr, "Current directory: %s\n", cwd);
-	fprintf(stderr, "Destination directory: %s\n", destdir);
-	fprintf(stderr, "Let's move some files!\n");
+		fprintf(stderr, "Current directory: %s\n", cwd);
+		fprintf(stderr, "Destination directory: %s\n", destdir);
+		fprintf(stderr, "Let's move some files!\n");
     } 
 
 /* set up, command line parsed, etc.
@@ -104,55 +104,53 @@ int main (int argc, char **argv) {
 
     while (fgets(theline, PATH_MAX, stdin) != NULL) {
 
-	theline[strcspn(theline, "\n")] = 0; // stomp on trailing \n
+		theline[strcspn(theline, "\n")] = 0; // stomp on trailing \n
 
-/* sloppy, but close enough for government work -
-   no buffer overflows as we put together the full paths
-*/
+	/* sloppy, but close enough for government work -
+	no buffer overflows as we put together the full paths
+	*/
 
-	if (strlen(destdir) + strlen("/") + strlen(theline) >= PATH_MAX - 1) {
-	    fprintf(stderr, "Bailing out  because PATH_MAX won't accommodate destination file %s/%s\n", destdir, theline);
-	    exit(1);
-	}
-	
-	if (strlen(cwd) + strlen("/") + strlen(theline) >= PATH_MAX - 1) {
-	    fprintf(stderr, "Bailing out  because PATH_MAX won't accommodate source file %s/%s\n", cwd, theline);
-	    exit(1);
-	}
-	
-	strncpy(fulldestpath, destdir, sizeof(fulldestpath));
-	if (destdir[strlen(destdir)-1] != '/')
-	{
-	    strncat(fulldestpath, "/", sizeof(fulldestpath) - 1);
-	}
-	strncat(fulldestpath, theline, sizeof(fulldestpath) - 1);
-
-/* that trailing slash won't happen in practice but can't be too careful */
-	strncpy(fullsourcepath, cwd, sizeof(fullsourcepath));
-	if (cwd[strlen(cwd)-1] != '/')
-	{
-	    strncat(fullsourcepath, "/", sizeof(fullsourcepath) - 1);
-	}
-	strncat(fullsourcepath, theline, sizeof(fullsourcepath) - 1);
-
-
-	if (verbose) {
-	    fprintf(stderr, "Moving %s to %s\n", fullsourcepath, fulldestpath);
-	}
-
-	if (doit) {
-
-	    ret = rename(fullsourcepath, fulldestpath);
-
-	    if(ret == 0) {
-		if (verbose) {
-		    printf("File renamed successfully\n");
+		if (strlen(destdir) + strlen("/") + strlen(theline) >= PATH_MAX - 1) {
+			fprintf(stderr, "Bailing out  because PATH_MAX won't accommodate destination file %s/%s\n", destdir, theline);
+			exit(1);
 		}
-	    } else {
-		fprintf(stderr, "Error: unable to rename %s to %s, giving up\n", fullsourcepath, fulldestpath);
-		exit(1);
-	    }
-	}
+		
+		if (strlen(cwd) + strlen("/") + strlen(theline) >= PATH_MAX - 1) {
+			fprintf(stderr, "Bailing out  because PATH_MAX won't accommodate source file %s/%s\n", cwd, theline);
+			exit(1);
+		}
+		
+		strncpy(fulldestpath, destdir, sizeof(fulldestpath));
+		if (destdir[strlen(destdir)-1] != '/') {
+			strncat(fulldestpath, "/", sizeof(fulldestpath) - 1);
+		}
+		strncat(fulldestpath, theline, sizeof(fulldestpath) - 1);
+
+	/* that trailing slash won't happen in practice but can't be too careful */
+		strncpy(fullsourcepath, cwd, sizeof(fullsourcepath));
+		if (cwd[strlen(cwd)-1] != '/') {
+			strncat(fullsourcepath, "/", sizeof(fullsourcepath) - 1);
+		}
+		strncat(fullsourcepath, theline, sizeof(fullsourcepath) - 1);
+
+
+		if (verbose) {
+			fprintf(stderr, "Moving %s to %s...", fullsourcepath, fulldestpath);
+		}
+
+		if (doit) {
+
+			ret = rename(fullsourcepath, fulldestpath);
+
+			if(ret == 0) {
+				if (verbose) {
+					printf("File renamed successfully\n");
+				}
+			} else {
+				fprintf(stderr, "Error: unable to rename %s to %s, giving up\n", fullsourcepath, fulldestpath);
+				exit(1);
+			}
+		}
     }
     exit(0);
 }
