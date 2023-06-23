@@ -22,3 +22,9 @@ do
 
 done
 
+date
+echo "rebuilding index for INBOX (please be patient one final time)"
+time doveadm index -u $1 INBOX
+
+exit 0
+
