@@ -43,7 +43,7 @@ last=`echo $2 | sed 's/^..../&-/;s/^......./&-/'`
 
 if [ -n "$first" -a -n "$last" ]; then
 	start=$(${DATE_CMD} -d"${first}T00:00:00" +%s)
-	finish=$(${DATE_CMD} -d"${last}T11:59:59" +%s)
+	finish=$(${DATE_CMD} -d"${last}T23:59:59" +%s)
 else
 	year="$1"
 	if [ -z "$year" ]; then
@@ -51,7 +51,7 @@ else
 		exit 1
 	fi
 	start=$(${DATE_CMD} -d ${year}-01-01T00:00:00 +%s)
-	finish=$(${DATE_CMD} -d ${year}-12-31T11:59:59 +%s)
+	finish=$(${DATE_CMD} -d ${year}-12-31T23:59:59 +%s)
 fi
 
 case $diag in
