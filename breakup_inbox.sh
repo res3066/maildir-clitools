@@ -7,6 +7,7 @@
 # usage: breakup_inbox.sh rs 2016 2022
 #        breakup_inbox.sh user first_year final_year (to archive)
 
+export PATH=`pwd`:$PATH
 
 cd /home/$1/Maildir/cur
 
